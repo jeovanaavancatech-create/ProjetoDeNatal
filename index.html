@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magia de Natal - Cena Interativa</title>
+    <!-- Carregamento do Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fontes temáticas elegantes do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Mountains+of+Christmas:wght@700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Estilos personalizados para animações e atmosferas natalinas */
+        :root {
+            --gold-primary: #ffd700;
+            --gold-light: #fff3b0;
+            --gold-dark: #b8860b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(ellipse at top, #132954 0%, #09152e 55%, #040914 100%);
+            height: 100vh;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+            color: #f8fafc;
+            user-select: none;
+            transition: background 0.6s ease, color 0.4s ease;
+        }
+
+        /* Tema Claro (Paisagem Diurna de Inverno) */
+        body.light-theme {
+            background: radial-gradient(ellipse at top, #bae6fd 0%, #7dd3fc 45%, #e0f2fe 100%);
+            color: #0f172a;
+        }
+
+        body.light-theme #stars-container {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Brilho Solar Suave no Tema Claro */
+        .sun-glow {
+            position: fixed;
+            top: -80px;
+            left: -80px;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 250, 210, 0.95) 0%, rgba(253, 224, 71, 0.35) 45%, transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            z-index: 0;
+        }
+
+        body.light-theme .sun-glow {
+            opacity: 1;
+        }
+
+        .font-christmas {
+            font-family: 'Mountains of Christmas', cursive;
+        }
+
+        .font-royal {
+            font-family: 'Cinzel Decorative', serif;
+        }
+
+        /* Estrelas cintilantes no fundo */
+        .star-bg {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: twinkle var(--duration, 3s) infinite ease-in-out alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 0.95; transform: scale(1.2); }
+        }
+
+        /* Estilo dos balões e cartões com contorno dourado brilhante */
+        .gold-balloon {
+            background: linear-gradient(145deg, rgba(15, 32, 66, 0.85), rgba(8, 18, 40, 0.92));
+            border: 2px solid #ffd700;
+            box-shadow: 
+                0 0 15px rgba(255, 215, 0, 0.35),
+                inset 0 0 12px rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(8px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.5s ease;
+        }
+
+        body.light-theme .gold-balloon {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(240, 249, 255, 0.94));
+            border: 2px solid #d97706;
+            box-shadow: 
+                0 8px 20px rgba(180, 83, 9, 0.18),
+                inset 0 0 12px rgba(255, 215, 0, 0.25);
+        }
+
+        .gold-balloon:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 24px rgba(255, 215, 0, 0.55),
+                inset 0 0 16px rgba(255, 215, 0, 0.25);
+        }
+
+        /* Adaptação de textos internos dos balões no Tema Claro */
+        body.light-theme .balloon-title {
+            color: #b45309 !important;
+            text-shadow: none !important;
+        }
+
+        body.light-theme .balloon-subtitle {
+            color: #92400e !important;
+        }
+
+        body.light-theme .balloon-body {
+            color: #1e293b !important;
+        }
+
+        /* Pontinha do balão de fala do boneco de neve */
+        .speech-bubble-tail::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 11px 11px 0;
+            border-style: solid;
+            border-color: #ffd700 transparent;
+            display: block;
+            width: 0;
+        }
+
+        body.light-theme .speech-bubble-tail::after {
+            border-color: #d97706 transparent;
+        }
+
+        .speech-bubble-tail::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 9px 9px 0;
+            border-style: solid;
+            border-color: #0b1834 transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+        }
+
+        body.light-theme .speech-bubble-tail::before {
+            border-color: #f4faff transparent;
+        }
+
+        /* Animação do Papai Noel no trenó */
+        #santa-sleigh-wrapper {
+            position: fixed;
+            top: 9%;
+            left: -380px;
+            width: 340px;
+            z-index: 5;
+            pointer-events: none;
+            filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.45));
+        }
+
+        .fly-across {
+            animation: santaFly 5.5s linear forwards;
+        }
+
+        @keyframes santaFly {
+            0% {
+                transform: translateX(0) translateY(15px) rotate(-4deg) scale(0.85);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(calc(50vw + 180px)) translateY(-18px) rotate(1deg) scale(1);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100vw + 420px)) translateY(10px) rotate(4deg) scale(0.9);
+                opacity: 0;
+            }
+        }
+
+        /* Luzes da Árvore de Natal piscando */
+        .tree-light {
+            animation: lightGlow 1.4s infinite alternate ease-in-out;
+            cursor: pointer;
+            transform-box: fill-box;
+            transform-origin: top center;
+        }
+        .tree-light-delay-1 { animation-delay: 0.4s; }
+        .tree-light-delay-2 { animation-delay: 0.8s; }
+        .tree-light-delay-3 { animation-delay: 1.1s; }
+
+        .ornament-swinging {
+            animation: ornamentSwing 0.9s ease-in-out;
+        }
+
+        @keyframes ornamentSwing {
+            0% { transform: rotate(0deg); }
+            20% { transform: rotate(22deg); }
+            40% { transform: rotate(-18deg); }
+            60% { transform: rotate(12deg); }
+            80% { transform: rotate(-6deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes lightGlow {
+            0% {
+                opacity: 0.35;
+                filter: brightness(0.7);
+            }
+            100% {
+                opacity: 1;
+                filter: brightness(1.6) drop-shadow(0 0 8px currentColor);
+            }
+        }
+
+        .tree-star {
+            animation: starPulse 1.8s infinite alternate ease-in-out;
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        @keyframes starPulse {
+            0% {
+                filter: drop-shadow(0 0 6px #ffd700);
+                transform: scale(0.95);
+            }
+            100% {
+                filter: drop-shadow(0 0 22px #fff3b0) drop-shadow(0 0 35px #ffd700);
+                transform: scale(1.08);
+            }
+        }
+
+        /* Animações de humor do Boneco de Neve */
+        .snowman-container {
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .snowman-container:active {
+            transform: scale(0.94);
+        }
+
+        .snowman-happy {
+            animation: gentleBob 2.6s infinite ease-in-out;
+        }
+
+        @keyframes gentleBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(1.5deg); }
+        }
+
+        .snowman-annoyed {
+            animation: slightTilt 0.4s ease-in-out;
+        }
+
+        @keyframes slightTilt {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-4deg); }
+            75% { transform: rotate(4deg); }
+        }
+
+        .snowman-angry {
+            animation: angerShake 0.14s infinite linear;
+        }
+
+        @keyframes angerShake {
+            0% { transform: translate(-2px, 1px) rotate(-1.5deg); }
+            25% { transform: translate(2px, -1px) rotate(1.5deg); }
+            50% { transform: translate(-2px, -1px) rotate(-1deg); }
+            75% { transform: translate(2px, 1px) rotate(1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        .snowman-throw {
+            animation: throwMotion 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes throwMotion {
+            0% { transform: scale(1) rotate(0deg); }
+            35% { transform: scale(0.9, 1.08) translateY(8px) rotate(-12deg); }
+            70% { transform: scale(1.12, 0.92) translateY(-14px) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        /* Bola de neve voando na direção da tela */
+        #flying-snowball {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #e2e8f0 65%, #94a3b8 100%);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+            z-index: 60;
+            pointer-events: none;
+            display: none;
+        }
+
+        .snowball-zoom {
+            display: block !important;
+            animation: snowballImpact 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+        }
+
+        @keyframes snowballImpact {
+            0% {
+                transform: translate(-50%, -50%) scale(0.4);
+                opacity: 1;
+            }
+            100% {
+                left: 50vw !important;
+                top: 50vh !important;
+                transform: translate(-50%, -50%) scale(45);
+                opacity: 1;
+            }
+        }
+
+        /* Tela coberta de neve que derrete em exatamente 2 segundos */
+        #snow-splat-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 70;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            background: 
+                radial-gradient(circle at 20% 25%, #ffffff 0%, rgba(255,255,255,0.98) 40%, transparent 75%),
+                radial-gradient(circle at 80% 30%, #ffffff 0%, rgba(248,250,252,0.98) 45%, transparent 80%),
+                radial-gradient(circle at 50% 65%, #ffffff 0%, rgba(241,245,249,0.99) 55%, transparent 85%),
+                linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+        }
+
+        #snow-splat-screen::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: radial-gradient(circle at 50% 0%, #ffffff 30px, transparent 32px);
+            background-size: 60px 60px;
+        }
+
+        .snow-melting {
+            visibility: visible !important;
+            animation: meltScreen 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes meltScreen {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scaleY(1);
+                filter: blur(0px);
+            }
+            25% {
+                opacity: 0.98;
+                transform: translateY(1%) scaleY(1.01);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(18%) scaleY(1.08);
+                filter: blur(8px);
+            }
+        }
+
+        /* Neve no chão */
+        .snow-ground {
+            background: linear-gradient(180deg, #f8fafc 0%, #cbd5e1 65%, #94a3b8 100%);
+            box-shadow: 0 -10px 35px rgba(255, 255, 255, 0.22);
+        }
+
+        /* Janela de Créditos estilo Final de Filme */
+        .credits-viewport {
+            mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%);
+        }
+
+        .sky-credit-text {
+            text-shadow: 0 2px 10px rgba(4, 9, 20, 0.95), 0 0 14px rgba(255, 215, 0, 0.45);
+        }
+
+        body.light-theme .sky-credit-text {
+            color: #0f172a !important;
+            text-shadow: 0 1px 8px rgba(255, 255, 255, 0.95), 0 0 12px rgba(255, 255, 255, 0.85);
+        }
+
+        /* Animações do Boneco de Neve Secundário (Construção por Inatividade) */
+        .mini-part {
+            opacity: 0;
+            transform: scale(0.3) translateY(15px);
+            transform-origin: center;
+            transition: opacity 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .mini-part.built {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .mini-part.falling-piece {
+            opacity: 0 !important;
+            transform: translateY(38px) rotate(22deg) scale(0.45) !important;
+            transition: opacity 0.32s ease-in, transform 0.38s cubic-bezier(0.55, 0.055, 0.675, 0.19) !important;
+        }
+
+        #snowman-wrapper {
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .snowman-building-reach {
+            animation: buildWorkMotion 0.85s infinite ease-in-out;
+        }
+
+        @keyframes buildWorkMotion {
+            0%, 100% {
+                transform: translateX(30px) rotate(7deg) scaleY(0.98);
+            }
+            50% {
+                transform: translateX(38px) translateY(-5px) rotate(12deg) scaleY(1.02);
+            }
+        }
+
+        .snowman-surprised {
+            animation: surpriseJump 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes surpriseJump {
+            0% { transform: scale(1) translateY(0); }
+            30% { transform: scale(0.94, 1.08) translateY(-14px) rotate(-4deg); }
+            65% { transform: scale(1.04, 0.96) translateY(2px) rotate(2deg); }
+            100% { transform: scale(1) translateY(0) rotate(0deg); }
+        }
+
+        .snowman-hit-reaction {
+            animation: hitImpactMotion 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes hitImpactMotion {
+            0% { transform: translateX(0) rotate(0deg) scale(1); }
+            22% { transform: translateX(26px) translateY(-6px) rotate(16deg) scale(0.92, 1.06); }
+            50% { transform: translateX(14px) translateY(4px) rotate(8deg) scale(1.04, 0.95); }
+            78% { transform: translateX(6px) translateY(-2px) rotate(3deg) scale(0.99, 1.01); }
+            100% { transform: translateX(0) translateY(0) rotate(0deg) scale(1); }
+        }
+
+        .gift-hit-bounce {
+            animation: giftBounceOff 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            pointer-events: none;
+        }
+
+        @keyframes giftBounceOff {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1.08); }
+            30% { transform: translate(-24px, -22px) rotate(-25deg) scale(0.95); }
+            65% { transform: translate(-38px, 14px) rotate(-42deg) scale(1); }
+            85% { transform: translate(-42px, 6px) rotate(-36deg) scale(1); }
+            100% { transform: translate(-44px, 12px) rotate(-38deg) scale(1); }
+        }
+
+        /* Estilos dos presentes arrastáveis */
+        .draggable-gift {
+            position: fixed;
+            z-index: 25;
+            cursor: grab;
+            touch-action: none;
+            user-select: none;
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+        }
+
+        .draggable-gift:hover {
+            transform: scale(1.08);
+        }
+
+        .draggable-gift.dragging {
+            cursor: grabbing;
+            transform: scale(1.16) rotate(-4deg);
+            filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.65));
+            z-index: 50;
+            transition: none;
+        }
+
+        .draggable-gift.returning {
+            transition: left 0.65s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.65s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.65s ease;
+            pointer-events: none;
+        }
+
+        /* Dica visual: setinha curva animada dos presentes até o boneco de neve */
+        #gift-drag-hint {
+            position: fixed;
+            z-index: 26;
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            filter: drop-shadow(0 3px 10px rgba(4, 9, 20, 0.85)) drop-shadow(0 0 8px rgba(255, 215, 0, 0.65));
+        }
+
+        #gift-drag-hint.hint-hidden {
+            opacity: 0 !important;
+            transform: scale(0.85) translateY(8px);
+        }
+
+        .hint-arrow-dash {
+            stroke-dasharray: 8 6;
+            animation: hintDashFlow 1.1s linear infinite;
+        }
+
+        @keyframes hintDashFlow {
+            to {
+                stroke-dashoffset: -28;
+            }
+        }
+
+        .hint-hand-slide {
+            animation: hintSlideMotion 1.8s ease-in-out infinite;
+        }
+
+        @keyframes hintSlideMotion {
+            0%, 100% {
+                transform: translate(0px, 0px) scale(1);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translate(22px, -8px) scale(1.12);
+                opacity: 1;
+            }
+        }
+
+        /* Estilos da Mecânica "Fazer Pedido" */
+        .wish-envelope-btn {
+            animation: envelopeFloat 2.8s infinite ease-in-out;
+        }
+
+        @keyframes envelopeFloat {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-6px) rotate(2deg); }
+        }
+
+        #wish-santa-collector {
+            position: fixed;
+            top: 15%;
+            left: -420px;
+            width: 340px;
+            z-index: 45;
+            pointer-events: none;
+            filter: drop-shadow(0 0 18px rgba(255, 215, 0, 0.75));
+            transition: left 1.1s cubic-bezier(0.22, 1, 0.36, 1), top 1.1s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s ease, opacity 0.5s ease;
+        }
+
+        #wish-santa-collector.santa-arrived {
+            left: calc(50vw - 170px);
+            top: 13%;
+            animation: santaHoverWait 2.2s infinite ease-in-out 1.1s;
+        }
+
+        #wish-santa-collector.santa-departing {
+            animation: none;
+            left: calc(100vw + 450px);
+            top: 5%;
+            transform: rotate(-8deg) scale(0.95);
+        }
+
+        @keyframes santaHoverWait {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+
+        .envelope-fly-to-santa {
+            animation: flyToSantaSleigh 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            pointer-events: none;
+        }
+
+        @keyframes flyToSantaSleigh {
+            0% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            60% {
+                transform: translateY(-130px) scale(0.55) rotate(14deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-185px) scale(0.15) rotate(25deg);
+                opacity: 0;
+            }
+        }
+
+        .celebration-sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 65;
+            animation: sparkleBurst var(--dur, 1.6s) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes sparkleBurst {
+            0% {
+                transform: translate(0, 0) scale(0.3) rotate(0deg);
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between h-[100dvh] max-h-[100dvh] overflow-hidden">
+
+    <!-- Brilho Solar para o Tema Claro -->
+    <div class="sun-glow" aria-hidden="true"></div>
+
+    <!-- Camada de Estrelas de Fundo -->
+    <div id="stars-container" class="fixed inset-0 pointer-events-none z-0 transition-opacity duration-500"></div>
+
+    <!-- Canvas da Neve Caindo -->
+    <canvas id="snow-canvas" class="fixed inset-0 pointer-events-none z-20"></canvas>
+
+    <!-- Controles Superiores Direitos: Música Natalina e Tema Claro/Escuro -->
+    <div class="fixed top-2 right-3 sm:top-3 sm:right-5 z-40 flex items-center gap-2">
+        <button id="toggle-music-btn" type="button" aria-label="Ativar ou desativar música natalina"
+            class="gold-balloon rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-300 balloon-title cursor-pointer active:scale-95">
+            <span id="music-icon">🔇</span>
+            <span id="music-label" class="hidden sm:inline">Música: Off</span>
+        </button>
+
+        <button id="toggle-theme-btn" type="button" aria-label="Alternar tema claro e escuro"
+            class="gold-balloon rounded-full px-3.5 py-1.5 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-amber-300 balloon-title cursor-pointer active:scale-95">
+            <span id="theme-icon">☀️</span>
+            <span id="theme-label" class="hidden sm:inline">Tema Claro</span>
+        </button>
+    </div>
+
+    <!-- Papai Noel no Trenó com Renas (passa a cada 2 segundos) -->
+    <div id="santa-sleigh-wrapper" aria-hidden="true">
+        <svg viewBox="0 0 420 110" class="w-full h-auto overflow-visible">
+            <path d="M 10 72 Q 70 85 135 68" stroke="url(#magicTrail)" stroke-width="4" fill="none" stroke-dasharray="6 6" />
+            <defs>
+                <linearGradient id="magicTrail" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#ffd700" stop-opacity="0" />
+                    <stop offset="100%" stop-color="#ffd700" stop-opacity="0.9" />
+                </linearGradient>
+            </defs>
+
+            <path d="M 165 58 Q 230 68 355 52" stroke="#ffd700" stroke-width="1.5" fill="none" opacity="0.85" />
+
+            <!-- Trenó do Papai Noel -->
+            <g transform="translate(65, 32)">
+                <path d="M 5 52 L 95 52 Q 112 52 115 40" stroke="#ffd700" stroke-width="3.5" fill="none" stroke-linecap="round" />
+                <line x1="25" y1="42" x2="25" y2="52" stroke="#ffd700" stroke-width="3" />
+                <line x1="75" y1="42" x2="75" y2="52" stroke="#ffd700" stroke-width="3" />
+                <path d="M 10 22 Q 15 44 35 44 L 85 44 Q 100 44 102 28 L 75 28 Q 65 36 45 34 L 22 18 Z" fill="#dc2626" stroke="#ffd700" stroke-width="2" />
+                <circle cx="32" cy="22" r="13" fill="#92400e" stroke="#fbbf24" stroke-width="1.5" />
+                <circle cx="62" cy="24" r="10" fill="#dc2626" />
+                <circle cx="62" cy="12" r="6.5" fill="#fed7aa" />
+                <path d="M 56 13 Q 62 22 68 13 Z" fill="#ffffff" />
+                <path d="M 55 8 L 69 8 L 62 -2 Z" fill="#dc2626" />
+                <circle cx="62" cy="-2" r="2.5" fill="#ffffff" />
+            </g>
+
+            <!-- Rena Traseira -->
+            <g transform="translate(245, 36)">
+                <ellipse cx="22" cy="22" rx="14" ry="8" fill="#854d0e" />
+                <line x1="12" y1="28" x2="8" y2="40" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="30" y1="28" x2="36" y2="39" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="36" cy="12" r="6" fill="#854d0e" />
+                <path d="M 35 6 L 33 -2 M 38 6 L 41 -2" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round" />
+            </g>
+
+            <!-- Rena Dianteira (Rudolph) -->
+            <g transform="translate(325, 30)">
+                <ellipse cx="22" cy="22" rx="15" ry="8.5" fill="#92400e" />
+                <line x1="12" y1="28" x2="7" y2="41" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="31" y1="28" x2="38" y2="39" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="37" cy="11" r="6.5" fill="#92400e" />
+                <circle cx="44" cy="11" r="3" fill="#ef4444">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="0.6s" repeatCount="indefinite" />
+                </circle>
+                <path d="M 35 5 L 32 -4 M 39 5 L 43 -3" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- Cabeçalho e Balões de Texto com Contorno Dourado -->
+    <header class="relative z-10 pt-12 sm:pt-14 px-3 sm:px-6 max-w-6xl mx-auto w-full text-center shrink-0">
+        <div class="inline-block gold-balloon rounded-2xl px-4 py-2 sm:px-8 sm:py-2.5 mb-2">
+            <h1 class="balloon-title font-christmas text-2xl sm:text-4xl md:text-5xl text-amber-300 tracking-wide drop-shadow-[0_2px_10px_rgba(255,215,0,0.5)]">
+                ✨ Feliz Natal & Próspero Ano Novo ✨
+            </h1>
+            <p class="balloon-subtitle text-[10px] sm:text-xs text-amber-100/90 mt-0.5 font-medium tracking-wider uppercase">
+                ✨feito por: jeovana darcolete✨
+            </p>
+        </div>
+
+        <!-- Cartões / Balões de Mensagens Natalinas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-3 max-w-5xl mx-auto">
+            <div class="gold-balloon rounded-xl p-2 sm:p-2.5 text-left flex items-center sm:items-start gap-2.5">
+                <span class="text-xl sm:text-2xl shrink-0">🎄</span>
+                <div>
+                    <h2 class="balloon-title text-amber-300 font-bold text-xs sm:text-sm">Espírito Natalino</h2>
+                    <p class="balloon-body text-slate-200 text-[11px] sm:text-xs leading-snug">
+                        Que a luz desta noite ilumine seu lar com amor, esperança e momentos inesquecíveis.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hidden sm:flex gold-balloon rounded-xl p-2 sm:p-2.5 text-left items-start gap-2.5">
+                <span class="text-xl sm:text-2xl shrink-0">🛷</span>
+                <div>
+                    <h2 class="balloon-title text-amber-300 font-bold text-xs sm:text-sm">Olhe para o Céu!</h2>
+                    <p class="balloon-body text-slate-200 text-[11px] sm:text-xs leading-snug">
+                        O Papai Noel e suas renas estão cruzando o céu estrelado entregando presentes pelo mundo.
+                    </p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex gold-balloon rounded-xl p-2 sm:p-2.5 text-left items-start gap-2.5">
+                <span class="text-xl sm:text-2xl shrink-0">⛄</span>
+                <div>
+                    <h2 class="balloon-title text-amber-300 font-bold text-xs sm:text-sm">Cuidado com o Sr. Neve</h2>
+                    <p class="balloon-body text-slate-200 text-[11px] sm:text-xs leading-snug">
+                        Ele adora conversar, mas não gosta nada que fiquem cutucando sua barriga sem parar!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Palco Principal: Árvore de Natal e Boneco de Neve Interativo -->
+    <main class="relative z-10 flex-1 min-h-0 flex items-end justify-center px-3 sm:px-4 pb-5 sm:pb-7 max-w-5xl mx-auto w-full">
+        <div class="w-full h-full flex flex-row items-end justify-around gap-2 sm:gap-4">
+            
+            <!-- Árvore de Natal Iluminada (SVG Detalhado) -->
+            <div class="relative flex flex-col items-center w-40 sm:w-64 md:w-72 max-h-full select-none">
+                <div class="absolute inset-0 bg-amber-400/10 blur-3xl rounded-full pointer-events-none"></div>
+
+                <svg viewBox="0 0 320 390" class="w-full h-auto drop-shadow-[0_12px_25px_rgba(0,0,0,0.65)] overflow-visible">
+                    <defs>
+                        <linearGradient id="treeGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#15803d" />
+                            <stop offset="100%" stop-color="#052e16" />
+                        </linearGradient>
+                        <linearGradient id="treeGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#16a34a" />
+                            <stop offset="100%" stop-color="#064e3b" />
+                        </linearGradient>
+                        <linearGradient id="trunkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#451a03" />
+                            <stop offset="50%" stop-color="#78350f" />
+                            <stop offset="100%" stop-color="#451a03" />
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Tronco -->
+                    <rect x="138" y="325" width="44" height="52" rx="4" fill="url(#trunkGrad)" />
+
+                    <!-- Âncoras invisíveis para os presentes arrastáveis ao pé da árvore -->
+                    <rect id="gift-slot-red" x="68" y="348" width="38" height="30" fill="transparent" />
+                    <rect id="gift-slot-blue" x="205" y="350" width="42" height="28" fill="transparent" />
+
+                    <!-- Camadas de Folhagem da Árvore -->
+                    <path d="M 160 165 L 35 330 Q 160 350 285 330 Z" fill="url(#treeGrad1)" />
+                    <path d="M 160 115 L 55 265 Q 160 282 265 265 Z" fill="url(#treeGrad2)" />
+                    <path d="M 160 70 L 78 195 Q 160 210 242 195 Z" fill="url(#treeGrad1)" />
+                    <path d="M 160 32 L 105 125 Q 160 136 215 125 Z" fill="url(#treeGrad2)" />
+
+                    <!-- Festões Dourados -->
+                    <path d="M 112 118 Q 160 142 208 118" stroke="#ffd700" stroke-width="3" fill="none" stroke-dasharray="4 3" opacity="0.85" />
+                    <path d="M 85 186 Q 160 218 235 186" stroke="#ffd700" stroke-width="3.5" fill="none" stroke-dasharray="5 3" opacity="0.85" />
+                    <path d="M 60 256 Q 160 296 260 256" stroke="#ffd700" stroke-width="4" fill="none" stroke-dasharray="6 3" opacity="0.85" />
+
+                    <!-- Estrela Brilhante no Topo -->
+                    <g transform="translate(160, 32)">
+                        <polygon class="tree-star" points="0,-22 6.5,-7 22,-5 10,5 14,20 0,12 -14,20 -10,5 -22,-5 -6.5,-7" fill="#ffd700" stroke="#fffbeb" stroke-width="1.5" />
+                    </g>
+
+                    <!-- Luzes e Bolas Piscando -->
+                    <circle cx="145" cy="95" r="6" fill="#ff3b3b" class="tree-light" style="color:#ff3b3b" />
+                    <circle cx="178" cy="105" r="6" fill="#38bdf8" class="tree-light tree-light-delay-1" style="color:#38bdf8" />
+                    
+                    <circle cx="122" cy="155" r="7" fill="#fbbf24" class="tree-light tree-light-delay-2" style="color:#fbbf24" />
+                    <circle cx="162" cy="148" r="6.5" fill="#f472b6" class="tree-light" style="color:#f472b6" />
+                    <circle cx="198" cy="162" r="7" fill="#4ade80" class="tree-light tree-light-delay-3" style="color:#4ade80" />
+
+                    <circle cx="96" cy="222" r="7.5" fill="#38bdf8" class="tree-light tree-light-delay-1" style="color:#38bdf8" />
+                    <circle cx="138" cy="215" r="7" fill="#ff3b3b" class="tree-light tree-light-delay-3" style="color:#ff3b3b" />
+                    <circle cx="182" cy="228" r="7.5" fill="#fbbf24" class="tree-light" style="color:#fbbf24" />
+                    <circle cx="224" cy="218" r="7" fill="#c084fc" class="tree-light tree-light-delay-2" style="color:#c084fc" />
+
+                    <circle cx="72" cy="298" r="8" fill="#fbbf24" class="tree-light" style="color:#fbbf24" />
+                    <circle cx="118" cy="288" r="8" fill="#4ade80" class="tree-light tree-light-delay-2" style="color:#4ade80" />
+                    <circle cx="164" cy="302" r="8.5" fill="#ff3b3b" class="tree-light tree-light-delay-1" style="color:#ff3b3b" />
+                    <circle cx="208" cy="290" r="8" fill="#38bdf8" class="tree-light tree-light-delay-3" style="color:#38bdf8" />
+                    <circle cx="250" cy="304" r="8" fill="#f472b6" class="tree-light" style="color:#f472b6" />
+                </svg>
+            </div>
+
+            <!-- Boneco de Neve Interativo -->
+            <div class="relative flex flex-col items-center max-h-full">
+                <!-- Balão de Fala com Contorno Dourado -->
+                <div id="snowman-speech" class="gold-balloon speech-bubble-tail relative rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 mb-2 text-center max-w-[175px] sm:max-w-[240px] transition-all duration-300">
+                    <p id="snowman-text" class="balloon-body text-amber-100 font-semibold text-[11px] sm:text-xs leading-snug">
+                        Ho-ho-oi! Clique em mim para desejar Feliz Natal! ⛄
+                    </p>
+                    <span id="click-indicator" class="balloon-subtitle block text-[9px] sm:text-[10px] text-amber-300/80 mt-0.5 font-medium">
+                        Toques: 0 / 4
+                    </span>
+                </div>
+
+                <!-- Corpo do Boneco de Neve -->
+                <div id="snowman-wrapper" role="button" tabindex="0" aria-label="Boneco de neve interativo. Clique nele para ver suas reações." class="snowman-container snowman-happy w-32 sm:w-44 md:w-52 focus:outline-none">
+                    <svg id="snowman-svg" viewBox="0 0 240 280" class="w-full h-auto drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] overflow-visible">
+                        <defs>
+                            <radialGradient id="snowBodyGrad" cx="35%" cy="30%" r="70%">
+                                <stop offset="0%" stop-color="#ffffff" />
+                                <stop offset="70%" stop-color="#e2e8f0" />
+                                <stop offset="100%" stop-color="#94a3b8" />
+                            </radialGradient>
+                        </defs>
+
+                        <!-- Braço Esquerdo (Galho) -->
+                        <g id="arm-left" style="transform-origin: 75px 155px; transition: transform 0.3s ease;">
+                            <path d="M 75 155 L 22 125 M 42 136 L 28 112 M 38 134 L 18 142" stroke="#5c3a21" stroke-width="5" stroke-linecap="round" fill="none" />
+                        </g>
+
+                        <!-- Braço Direito (Galho + Bola de neve pronta para arremesso) -->
+                        <g id="arm-right" style="transform-origin: 165px 155px; transition: transform 0.3s ease;">
+                            <path d="M 165 155 L 218 122 M 196 135 L 210 110 M 200 133 L 222 140" stroke="#5c3a21" stroke-width="5" stroke-linecap="round" fill="none" />
+                            <circle id="hand-snowball" cx="218" cy="118" r="14" fill="url(#snowBodyGrad)" opacity="0" style="transition: opacity 0.25s ease;" />
+                        </g>
+
+                        <!-- Bola Inferior (Base) -->
+                        <circle cx="120" cy="215" r="56" fill="url(#snowBodyGrad)" />
+
+                        <!-- Bola do Meio (Tronco) -->
+                        <circle cx="120" cy="142" r="42" fill="url(#snowBodyGrad)" />
+
+                        <!-- Botões de Carvão -->
+                        <circle cx="120" cy="130" r="4.5" fill="#1e293b" />
+                        <circle cx="120" cy="148" r="4.5" fill="#1e293b" />
+                        <circle cx="120" cy="166" r="4.5" fill="#1e293b" />
+
+                        <!-- Cachecol Vermelho e Dourado -->
+                        <path d="M 86 105 Q 120 118 154 105 L 158 117 Q 120 130 82 117 Z" fill="#dc2626" stroke="#ffd700" stroke-width="1.2" />
+                        <path d="M 136 115 L 146 155 L 132 158 L 125 118 Z" fill="#dc2626" stroke="#ffd700" stroke-width="1.2" />
+
+                        <!-- Cabeça -->
+                        <circle id="snowman-head" cx="120" cy="76" r="33" fill="url(#snowBodyGrad)" />
+
+                        <!-- Rubor / Vermelhidão de Raiva no Rosto -->
+                        <circle id="anger-blush" cx="120" cy="76" r="32" fill="#ef4444" opacity="0" style="transition: opacity 0.3s ease;" />
+
+                        <!-- Bochechas Rosadas (Estado Alegre) -->
+                        <ellipse id="happy-cheeks-l" cx="101" cy="82" rx="5.5" ry="3.5" fill="#fda4af" opacity="0.85" />
+                        <ellipse id="happy-cheeks-r" cx="139" cy="82" rx="5.5" ry="3.5" fill="#fda4af" opacity="0.85" />
+
+                        <!-- Olhos -->
+                        <circle id="eye-left" cx="108" cy="70" r="4" fill="#0f172a" style="transition: all 0.2s ease;" />
+                        <circle id="eye-right" cx="132" cy="70" r="4" fill="#0f172a" style="transition: all 0.2s ease;" />
+                        <circle id="eye-glint-left" cx="109.5" cy="68.5" r="1.3" fill="#ffffff" />
+                        <circle id="eye-glint-right" cx="133.5" cy="68.5" r="1.3" fill="#ffffff" />
+
+                        <!-- Sobrancelhas Dinâmicas -->
+                        <path id="eyebrow-left" d="M 101 62 Q 108 59 114 62" stroke="#1e293b" stroke-width="3" stroke-linecap="round" fill="none" style="transition: all 0.25s ease;" />
+                        <path id="eyebrow-right" d="M 126 62 Q 132 59 139 62" stroke="#1e293b" stroke-width="3" stroke-linecap="round" fill="none" style="transition: all 0.25s ease;" />
+
+                        <!-- Nariz de Cenoura -->
+                        <polygon points="120,74 146,80 120,84" fill="#f97316" stroke="#ea580c" stroke-width="1" />
+
+                        <!-- Boca Dinâmica -->
+                        <path id="snowman-mouth" d="M 107 90 Q 120 101 133 90" stroke="#0f172a" stroke-width="3.2" stroke-linecap="round" fill="none" style="transition: all 0.25s ease;" />
+                        <ellipse id="snowman-mouth-surprise" cx="120" cy="94" rx="6.5" ry="8" fill="#0f172a" opacity="0" style="transition: opacity 0.2s ease;" />
+
+                        <!-- Cartola Natalina -->
+                        <g transform="translate(120, 44) rotate(-5)">
+                            <ellipse cx="0" cy="2" rx="36" ry="7" fill="#1e293b" />
+                            <rect x="-22" y="-32" width="44" height="34" rx="3" fill="#1e293b" />
+                            <rect x="-22" y="-10" width="44" height="7" fill="#dc2626" />
+                            <circle cx="14" cy="-7" r="3.5" fill="#ffd700" />
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Segundo Boneco de Neve (construído após 10s de inatividade) -->
+                <div id="secondary-snowman-wrapper" aria-hidden="true" class="pointer-events-none absolute -right-11 sm:-right-16 bottom-0 w-20 sm:w-28 select-none">
+                    <svg viewBox="0 0 160 200" class="w-full h-auto drop-shadow-[0_8px_14px_rgba(0,0,0,0.45)] overflow-visible">
+                        <circle id="mini-part-1" class="mini-part" cx="80" cy="155" r="38" fill="url(#snowBodyGrad)" />
+                        <g id="mini-part-2" class="mini-part">
+                            <circle cx="80" cy="104" r="28" fill="url(#snowBodyGrad)" />
+                            <circle cx="80" cy="96" r="3" fill="#1e293b" />
+                            <circle cx="80" cy="108" r="3" fill="#1e293b" />
+                            <path d="M 57 79 Q 80 88 103 79 L 105 87 Q 80 96 55 87 Z" fill="#16a34a" stroke="#ffd700" stroke-width="1" />
+                        </g>
+                        <g id="mini-part-3" class="mini-part">
+                            <circle cx="80" cy="59" r="22" fill="url(#snowBodyGrad)" />
+                            <circle cx="72" cy="54" r="2.8" fill="#0f172a" />
+                            <circle cx="88" cy="54" r="2.8" fill="#0f172a" />
+                            <polygon points="80,57 96,61 80,64" fill="#f97316" />
+                            <path d="M 72 68 Q 80 75 88 68" stroke="#0f172a" stroke-width="2.4" stroke-linecap="round" fill="none" />
+                        </g>
+                        <g id="mini-part-4" class="mini-part">
+                            <path d="M 52 106 L 22 86 M 34 94 L 26 78" stroke="#5c3a21" stroke-width="3.5" stroke-linecap="round" fill="none" />
+                            <path d="M 108 106 L 138 86 M 126 94 L 134 78" stroke="#5c3a21" stroke-width="3.5" stroke-linecap="round" fill="none" />
+                            <path d="M 60 42 L 100 42 L 80 14 Z" fill="#dc2626" />
+                            <rect x="58" y="39" width="44" height="6" rx="3" fill="#ffffff" />
+                            <circle cx="80" cy="14" r="4.5" fill="#ffffff" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Lista Colaborativa Estilo Créditos de Filme Subindo no Centro do Céu -->
+    <div aria-hidden="true" class="fixed top-[56%] sm:top-[58%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-[4] w-80 sm:w-[440px] pointer-events-none select-none">
+        <div id="credits-viewport" class="credits-viewport relative h-44 sm:h-52 overflow-hidden w-full">
+            <div id="credits-track" class="w-full text-center flex flex-col items-center gap-3 will-change-transform">
+                <!-- Preenchido dinamicamente via JavaScript / Firestore -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Campo Discreto no Canto Inferior Esquerdo para Enviar o Nome -->
+    <aside aria-label="Adicionar nome à lista de Natal" class="fixed bottom-11 left-3 sm:bottom-12 sm:left-5 z-30 w-60 sm:w-72 flex flex-col gap-1">
+        <form id="christmas-name-form" class="flex items-center gap-1.5">
+            <input id="christmas-name-input" type="text" maxlength="28" required placeholder="Seu nome no céu de Natal..."
+                class="w-full min-w-0 px-3 py-1.5 rounded-full text-xs bg-slate-950/60 backdrop-blur-sm text-white placeholder-slate-300 border border-amber-400/50 focus:outline-none focus:border-amber-300 shadow-sm" />
+            <button type="submit" id="send-name-btn"
+                class="shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 hover:from-amber-300 hover:to-yellow-400 active:scale-95 transition cursor-pointer shadow-sm">
+                Enviar
+            </button>
+        </form>
+        <div class="flex items-center justify-between px-2">
+            <span id="sync-badge" class="text-[10px] text-amber-200/85 sky-credit-text font-medium">
+                ● Ao vivo no céu
+            </span>
+            <p id="form-feedback" class="hidden text-[10px] font-semibold text-amber-300 sky-credit-text"></p>
+        </div>
+    </aside>
+
+    <!-- Chão Nevado -->
+    <div class="snow-ground fixed bottom-0 left-0 right-0 h-10 sm:h-12 z-[5] rounded-t-[50%] scale-x-110 pointer-events-none"></div>
+
+    <!-- Presentes Arrastáveis (posicionados dinamicamente ao pé da árvore) -->
+    <div id="gift-red" data-slot="gift-slot-red" role="button" tabindex="0" aria-label="Presente vermelho arrastável" class="draggable-gift w-11 sm:w-14">
+        <svg viewBox="0 0 44 38" class="w-full h-auto overflow-visible">
+            <rect x="3" y="8" width="38" height="28" rx="4" fill="#dc2626" stroke="#ffd700" stroke-width="1.8" />
+            <rect x="19" y="8" width="6" height="28" fill="#ffd700" />
+            <rect x="3" y="19" width="38" height="6" fill="#ffd700" />
+            <path d="M 22 8 Q 12 -2 8 6 Q 15 10 22 8 Z" fill="#ffd700" />
+            <path d="M 22 8 Q 32 -2 36 6 Q 29 10 22 8 Z" fill="#ffd700" />
+        </svg>
+    </div>
+
+    <div id="gift-blue" data-slot="gift-slot-blue" role="button" tabindex="0" aria-label="Presente azul arrastável" class="draggable-gift w-12 sm:w-15">
+        <svg viewBox="0 0 48 36" class="w-full h-auto overflow-visible">
+            <rect x="3" y="7" width="42" height="27" rx="4" fill="#2563eb" stroke="#ffd700" stroke-width="1.8" />
+            <rect x="21" y="7" width="6" height="27" fill="#ffd700" />
+            <rect x="3" y="18" width="42" height="6" fill="#ffd700" />
+            <path d="M 24 7 Q 13 -3 9 5 Q 17 9 24 7 Z" fill="#ffd700" />
+            <path d="M 24 7 Q 35 -3 39 5 Q 31 9 24 7 Z" fill="#ffd700" />
+        </svg>
+    </div>
+
+    <!-- Setinha Indicativa para Pegar e Arrastar o Presente até o Boneco de Neve -->
+    <div id="gift-drag-hint" aria-hidden="true" class="flex flex-col items-center">
+        <span class="sky-credit-text text-[10px] sm:text-xs font-extrabold text-amber-300 tracking-wide whitespace-nowrap mb-0.5">
+            Arraste o presente! 🎁
+        </span>
+        <svg viewBox="0 0 150 56" class="w-28 sm:w-36 h-auto overflow-visible">
+            <defs>
+                <marker id="goldArrowHead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                    <path d="M 0 1 L 7 4 L 0 7 Z" fill="#ffd700" />
+                </marker>
+            </defs>
+            <!-- Arco tracejado apontando do presente até o boneco de neve -->
+            <path d="M 12 42 Q 75 6 136 32" stroke="#ffd700" stroke-width="3.2" stroke-linecap="round" fill="none" class="hint-arrow-dash" marker-end="url(#goldArrowHead)" />
+            <!-- Ícone animado deslizando pelo caminho -->
+            <g class="hint-hand-slide">
+                <circle cx="24" cy="36" r="10" fill="rgba(255, 215, 0, 0.25)" />
+                <text x="16" y="42" font-size="16">👆</text>
+            </g>
+        </svg>
+    </div>
+
+    <!-- Bola de Neve Arremessada -->
+    <div id="flying-snowball"></div>
+
+    <!-- Tela Coberta de Neve que Derrete em 2 Segundos -->
+    <div id="snow-splat-screen" aria-hidden="true"></div>
+
+    <!-- Botão Envelope "Fazer Pedido" no Canto Inferior Direito -->
+    <button id="open-wish-envelope-btn" type="button" aria-label="Abrir envelope para fazer um pedido ao Papai Noel"
+        class="wish-envelope-btn gold-balloon fixed bottom-11 right-3 sm:bottom-12 sm:right-5 z-30 rounded-2xl px-3.5 py-2 flex items-center gap-2 cursor-pointer active:scale-95">
+        <span class="text-xl sm:text-2xl">✉️</span>
+        <div class="text-left">
+            <span class="balloon-title block text-xs sm:text-sm font-bold text-amber-300 leading-tight">Fazer Pedido</span>
+            <span class="balloon-subtitle block text-[10px] text-amber-100/80 leading-tight hidden sm:block">Carta ao Papai Noel</span>
+        </div>
+    </button>
+
+    <!-- Trenó Especial do Papai Noel para Buscar o Pedido -->
+    <div id="wish-santa-collector" aria-hidden="true" class="opacity-0">
+        <svg viewBox="0 0 420 110" class="w-full h-auto overflow-visible">
+            <path d="M 10 72 Q 70 85 135 68" stroke="#ffd700" stroke-width="4" fill="none" stroke-dasharray="6 6" opacity="0.85" />
+            <path d="M 165 58 Q 230 68 355 52" stroke="#ffd700" stroke-width="1.5" fill="none" opacity="0.9" />
+            <g transform="translate(65, 32)">
+                <path d="M 5 52 L 95 52 Q 112 52 115 40" stroke="#ffd700" stroke-width="3.5" fill="none" stroke-linecap="round" />
+                <line x1="25" y1="42" x2="25" y2="52" stroke="#ffd700" stroke-width="3" />
+                <line x1="75" y1="42" x2="75" y2="52" stroke="#ffd700" stroke-width="3" />
+                <path d="M 10 22 Q 15 44 35 44 L 85 44 Q 100 44 102 28 L 75 28 Q 65 36 45 34 L 22 18 Z" fill="#dc2626" stroke="#ffd700" stroke-width="2" />
+                <circle cx="32" cy="22" r="13" fill="#92400e" stroke="#fbbf24" stroke-width="1.5" />
+                <circle cx="62" cy="24" r="10" fill="#dc2626" />
+                <circle cx="62" cy="12" r="6.5" fill="#fed7aa" />
+                <path d="M 56 13 Q 62 22 68 13 Z" fill="#ffffff" />
+                <path d="M 55 8 L 69 8 L 62 -2 Z" fill="#dc2626" />
+                <circle cx="62" cy="-2" r="2.5" fill="#ffffff" />
+                <g id="santa-collected-envelope" opacity="0" transform="translate(74, 10) rotate(-12)">
+                    <rect x="0" y="0" width="22" height="15" rx="2" fill="#fffbeb" stroke="#d97706" stroke-width="1.5" />
+                    <path d="M 0 0 L 11 8 L 22 0" fill="none" stroke="#dc2626" stroke-width="1.5" />
+                </g>
+            </g>
+            <g transform="translate(245, 36)">
+                <ellipse cx="22" cy="22" rx="14" ry="8" fill="#854d0e" />
+                <line x1="12" y1="28" x2="8" y2="40" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="30" y1="28" x2="36" y2="39" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="36" cy="12" r="6" fill="#854d0e" />
+                <path d="M 35 6 L 33 -2 M 38 6 L 41 -2" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round" />
+            </g>
+            <g transform="translate(325, 30)">
+                <ellipse cx="22" cy="22" rx="15" ry="8.5" fill="#92400e" />
+                <line x1="12" y1="28" x2="7" y2="41" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="31" y1="28" x2="38" y2="39" stroke="#713f12" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="37" cy="11" r="6.5" fill="#92400e" />
+                <circle cx="44" cy="11" r="3" fill="#ef4444">
+                    <animate attributeName="opacity" values="0.6;1;0.6" dur="0.6s" repeatCount="indefinite" />
+                </circle>
+                <path d="M 35 5 L 32 -4 M 39 5 L 43 -3" stroke="#fde68a" stroke-width="1.5" stroke-linecap="round" />
+            </g>
+        </svg>
+    </div>
+
+    <!-- Modal da Carta Dentro do Envelope -->
+    <div id="wish-letter-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm">
+        <div id="wish-envelope-card" class="gold-balloon relative w-full max-w-md rounded-2xl p-5 sm:p-6 text-center transition-all duration-300">
+            <button id="close-wish-modal-btn" type="button" aria-label="Fechar carta"
+                class="absolute top-3 right-3 w-7 h-7 rounded-full bg-slate-800/80 text-amber-300 hover:bg-amber-400 hover:text-slate-950 font-bold text-sm flex items-center justify-center transition cursor-pointer">
+                ✕
+            </button>
+
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <span class="text-2xl">📜</span>
+                <h2 class="balloon-title font-christmas text-2xl sm:text-3xl text-amber-300">
+                    Querido Papai Noel...
+                </h2>
+            </div>
+
+            <p class="balloon-subtitle text-xs text-amber-100/85 mb-3">
+                O trenó já está esperando no céu! Escreva seu desejo de Natal na carta abaixo:
+            </p>
+
+            <form id="wish-letter-form" class="flex flex-col gap-3">
+                <div class="relative rounded-xl bg-amber-50 border-2 border-amber-400 p-3 shadow-inner text-left">
+                    <div class="flex items-center justify-between border-b border-amber-300/80 pb-1.5 mb-2">
+                        <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider">Polo Norte • Correio Mágico</span>
+                        <span class="text-sm">🎅🎄</span>
+                    </div>
+                    <textarea id="wish-letter-textarea" rows="4" maxlength="220" required
+                        placeholder="Escreva aqui o seu pedido especial de Natal..."
+                        class="w-full bg-transparent text-slate-900 placeholder-amber-800/55 text-sm leading-relaxed resize-none focus:outline-none font-medium"></textarea>
+                </div>
+
+                <div class="flex items-center justify-end gap-2">
+                    <button type="submit" id="submit-wish-btn"
+                        class="w-full py-2.5 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-red-600 via-red-500 to-amber-500 text-white border border-amber-300 shadow-[0_0_18px_rgba(255,215,0,0.45)] hover:brightness-110 active:scale-95 transition cursor-pointer flex items-center justify-center gap-2">
+                        <span>✉️</span>
+                        <span>Enviar Pedido</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Banner Flutuante de Comemoração -->
+    <div id="wish-celebration-banner" class="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[66] pointer-events-none hidden">
+        <div class="gold-balloon rounded-2xl px-6 py-4 text-center shadow-[0_0_35px_rgba(255,215,0,0.75)] animate-bounce">
+            <p class="text-2xl sm:text-3xl mb-1">🎉🎅✨🎁🎉</p>
+            <h3 class="balloon-title font-christmas text-2xl sm:text-3xl text-amber-300">
+                Pedido Enviado ao Polo Norte!
+            </h3>
+            <p class="balloon-body text-xs sm:text-sm text-amber-100 mt-1 font-semibold">
+                Ho-ho-ho! O Papai Noel levou sua carta no trenó!
+            </p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let isLightTheme = false;
+
+        /**
+         * 1. ESTRELAS CINTILANTES NO FUNDO
+         */
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            if (!container) return;
+            container.innerHTML = '';
+            const count = 85;
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star-bg';
+                const size = (Math.random() * 2.5 + 1).toFixed(1);
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${(Math.random() * 100).toFixed(2)}%`;
+                star.style.top = `${(Math.random() * 75).toFixed(2)}%`;
+                star.style.setProperty('--duration', `${(Math.random() * 3 + 1.5).toFixed(1)}s`);
+                container.appendChild(star);
+            }
+        }
+
+        /**
+         * 2. NEVE CAINDO CONTINUAMENTE EM CANVAS
+         */
+        function initSnowfall() {
+            const canvas = document.getElementById('snow-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const flakes = Array.from({ length: 110 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 3.2 + 1.2,
+                speedY: Math.random() * 1.3 + 0.5,
+                drift: Math.random() * 0.8 - 0.4,
+                phase: Math.random() * Math.PI * 2
+            }));
+
+            function renderSnow() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = isLightTheme ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.85)';
+
+                for (const f of flakes) {
+                    f.y += f.speedY;
+                    f.phase += 0.015;
+                    f.x += f.drift + Math.sin(f.phase) * 0.35;
+
+                    if (f.y > canvas.height + 5) {
+                        f.y = -5;
+                        f.x = Math.random() * canvas.width;
+                    }
+                    if (f.x > canvas.width + 5) f.x = -5;
+                    if (f.x < -5) f.x = canvas.width + 5;
+
+                    ctx.beginPath();
+                    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(renderSnow);
+            }
+
+            renderSnow();
+        }
+
+        /**
+         * 3. PAPAI NOEL PASSANDO NO TRENÓ A CADA 2 SEGUNDOS
+         */
+        function startSantaInterval() {
+            const santa = document.getElementById('santa-sleigh-wrapper');
+            let isFlying = false;
+
+            function triggerSantaPass() {
+                if (isFlying) return;
+                isFlying = true;
+
+                santa.classList.remove('fly-across');
+                void santa.offsetWidth;
+                
+                const randomTop = Math.floor(Math.random() * 8) + 6;
+                santa.style.top = `${randomTop}%`;
+                
+                santa.classList.add('fly-across');
+
+                setTimeout(() => {
+                    isFlying = false;
+                }, 5550);
+            }
+
+            triggerSantaPass();
+            setInterval(triggerSantaPass, 2000);
+        }
+
+        /**
+         * 3.1. BOLINHAS DA ÁRVORE BALANÇANDO AO PASSAR O MOUSE
+         */
+        function initTreeOrnamentsSwing() {
+            const ornaments = document.querySelectorAll('.tree-light');
+            ornaments.forEach((ornament) => {
+                ornament.addEventListener('mouseenter', () => {
+                    ornament.classList.remove('ornament-swinging');
+                    void ornament.offsetWidth;
+                    ornament.classList.add('ornament-swinging');
+                });
+                ornament.addEventListener('animationend', (e) => {
+                    if (e.animationName === 'ornamentSwing') {
+                        ornament.classList.remove('ornament-swinging');
+                    }
+                });
+            });
+        }
+
+        /**
+         * 4. LÓGICA DO BONECO DE NEVE INTERATIVO E PRESENTES ARRASTÁVEIS
+         */
+        function initSnowmanInteraction() {
+            const wrapper = document.getElementById('snowman-wrapper');
+            const speechText = document.getElementById('snowman-text');
+            const clickIndicator = document.getElementById('click-indicator');
+            const eyeLeft = document.getElementById('eye-left');
+            const eyeRight = document.getElementById('eye-right');
+            const eyebrowLeft = document.getElementById('eyebrow-left');
+            const eyebrowRight = document.getElementById('eyebrow-right');
+            const mouth = document.getElementById('snowman-mouth');
+            const mouthSurprise = document.getElementById('snowman-mouth-surprise');
+            const angerBlush = document.getElementById('anger-blush');
+            const happyCheeksL = document.getElementById('happy-cheeks-l');
+            const happyCheeksR = document.getElementById('happy-cheeks-r');
+            const armLeft = document.getElementById('arm-left');
+            const armRight = document.getElementById('arm-right');
+            const handSnowball = document.getElementById('hand-snowball');
+            const flyingSnowball = document.getElementById('flying-snowball');
+            const snowSplatScreen = document.getElementById('snow-splat-screen');
+
+            let clickCount = 0;
+            let isAnimatingAttack = false;
+            let isRetrievingGift = false;
+
+            function setFaceExpression(type) {
+                mouth.style.opacity = '1';
+                mouthSurprise.setAttribute('opacity', '0');
+                eyeLeft.setAttribute('r', '4');
+                eyeRight.setAttribute('r', '4');
+
+                if (type === 'happy') {
+                    eyebrowLeft.setAttribute('d', 'M 101 62 Q 108 59 114 62');
+                    eyebrowRight.setAttribute('d', 'M 126 62 Q 132 59 139 62');
+                    mouth.setAttribute('d', 'M 107 90 Q 120 101 133 90');
+                } else if (type === 'focused') {
+                    eyeLeft.setAttribute('r', '3.3');
+                    eyeRight.setAttribute('r', '3.3');
+                    eyebrowLeft.setAttribute('d', 'M 101 60 L 114 63');
+                    eyebrowRight.setAttribute('d', 'M 126 63 L 139 60');
+                    mouth.setAttribute('d', 'M 111 92 Q 120 90 129 94 Q 125 99 121 94');
+                } else if (type === 'surprised') {
+                    eyeLeft.setAttribute('r', '5.3');
+                    eyeRight.setAttribute('r', '5.3');
+                    eyebrowLeft.setAttribute('d', 'M 100 56 Q 108 51 115 57');
+                    eyebrowRight.setAttribute('d', 'M 125 57 Q 132 51 140 56');
+                    mouth.style.opacity = '0';
+                    mouthSurprise.setAttribute('opacity', '1');
+                }
+            }
+
+            function updateSnowmanMood(level) {
+                wrapper.classList.remove('snowman-happy', 'snowman-annoyed', 'snowman-angry', 'snowman-throw', 'snowman-surprised');
+                mouth.style.opacity = '1';
+                mouthSurprise.setAttribute('opacity', '0');
+                eyeLeft.setAttribute('r', '4');
+                eyeRight.setAttribute('r', '4');
+
+                if (level === 0) {
+                    wrapper.classList.add('snowman-happy');
+                    setFaceExpression('happy');
+                    angerBlush.setAttribute('opacity', '0');
+                    happyCheeksL.setAttribute('opacity', '0.85');
+                    happyCheeksR.setAttribute('opacity', '0.85');
+                    armLeft.style.transform = 'rotate(0deg)';
+                    armRight.style.transform = 'rotate(0deg)';
+                    handSnowball.setAttribute('opacity', '0');
+                    speechText.textContent = 'Ho-ho-oi! Clique em mim para desejar Feliz Natal! ⛄';
+                } else if (level === 1) {
+                    wrapper.classList.add('snowman-annoyed');
+                    eyebrowLeft.setAttribute('d', 'M 101 61 L 114 64');
+                    eyebrowRight.setAttribute('d', 'M 126 64 L 139 61');
+                    mouth.setAttribute('d', 'M 109 94 L 131 94');
+                    angerBlush.setAttribute('opacity', '0.25');
+                    happyCheeksL.setAttribute('opacity', '0.3');
+                    happyCheeksR.setAttribute('opacity', '0.3');
+                    speechText.textContent = 'Ei! Isso faz cócegas, por favor pare... 😐';
+                } else if (level === 2) {
+                    wrapper.classList.add('snowman-annoyed');
+                    eyebrowLeft.setAttribute('d', 'M 100 59 L 115 66');
+                    eyebrowRight.setAttribute('d', 'M 125 66 L 140 59');
+                    mouth.setAttribute('d', 'M 108 97 Q 120 89 132 97');
+                    angerBlush.setAttribute('opacity', '0.55');
+                    happyCheeksL.setAttribute('opacity', '0');
+                    happyCheeksR.setAttribute('opacity', '0');
+                    armLeft.style.transform = 'rotate(-12deg)';
+                    armRight.style.transform = 'rotate(12deg)';
+                    speechText.textContent = 'Estou falando sério! Já estou ficando irritado! 😠';
+                } else if (level === 3) {
+                    wrapper.classList.add('snowman-angry');
+                    eyebrowLeft.setAttribute('d', 'M 99 57 L 116 68');
+                    eyebrowRight.setAttribute('d', 'M 124 68 L 141 57');
+                    mouth.setAttribute('d', 'M 106 99 Q 120 85 134 99');
+                    angerBlush.setAttribute('opacity', '0.88');
+                    armLeft.style.transform = 'rotate(-22deg)';
+                    armRight.style.transform = 'rotate(-25deg)';
+                    handSnowball.setAttribute('opacity', '1');
+                    speechText.textContent = 'GRRR! EU AVISEI! SE CLICAR DE NOVO VAI LEVAR NEVE! 😡❄️';
+                }
+
+                clickIndicator.textContent = `Toques: ${level} / 4`;
+            }
+
+            function triggerSnowballAttack() {
+                isAnimatingAttack = true;
+                clickIndicator.textContent = 'Toques: 4 / 4 — TOMA ESSA!';
+                speechText.textContent = 'TOMA ESSA BOLA DE NEVE! 💥❄️';
+
+                wrapper.classList.remove('snowman-angry');
+                wrapper.classList.add('snowman-throw');
+                armRight.style.transform = 'rotate(45deg)';
+                handSnowball.setAttribute('opacity', '0');
+
+                const rect = wrapper.getBoundingClientRect();
+                const startX = rect.left + rect.width * 0.82;
+                const startY = rect.top + rect.height * 0.42;
+
+                flyingSnowball.style.left = `${startX}px`;
+                flyingSnowball.style.top = `${startY}px`;
+                flyingSnowball.classList.remove('snowball-zoom');
+                void flyingSnowball.offsetWidth;
+                flyingSnowball.classList.add('snowball-zoom');
+
+                setTimeout(() => {
+                    flyingSnowball.classList.remove('snowball-zoom');
+                    snowSplatScreen.classList.remove('snow-melting');
+                    void snowSplatScreen.offsetWidth;
+                    snowSplatScreen.classList.add('snow-melting');
+
+                    setTimeout(() => {
+                        snowSplatScreen.classList.remove('snow-melting');
+                        clickCount = 0;
+                        isAnimatingAttack = false;
+                        updateSnowmanMood(0);
+                        speechText.textContent = 'Hahaha! Desculpe, não resisti! Feliz Natal! 😄🎄';
+                    }, 2000);
+                }, 350);
+            }
+
+            function handleSnowmanClick() {
+                if (isAnimatingAttack || isRetrievingGift) return;
+
+                clickCount++;
+                if (clickCount <= 3) {
+                    updateSnowmanMood(clickCount);
+                } else if (clickCount === 4) {
+                    triggerSnowballAttack();
+                }
+            }
+
+            wrapper.addEventListener('click', handleSnowmanClick);
+            wrapper.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSnowmanClick();
+                }
+            });
+
+            /**
+             * INATIVIDADE (10 SEGUNDOS): CONSTRUÇÃO E DESMONTE BOLA POR BOLA
+             */
+            const miniParts = [
+                document.getElementById('mini-part-1'),
+                document.getElementById('mini-part-2'),
+                document.getElementById('mini-part-3'),
+                document.getElementById('mini-part-4')
+            ];
+
+            let idleTimer = null;
+            let buildTimers = [];
+            let collapseTimers = [];
+            let isBuildingOrBuilt = false;
+
+            function clearBuildTimers() {
+                buildTimers.forEach((t) => clearTimeout(t));
+                buildTimers = [];
+            }
+
+            function clearCollapseTimers() {
+                collapseTimers.forEach((t) => clearTimeout(t));
+                collapseTimers = [];
+            }
+
+            function dismantleSecondarySnowman() {
+                clearBuildTimers();
+                clearCollapseTimers();
+
+                if (isBuildingOrBuilt) {
+                    isBuildingOrBuilt = false;
+                    wrapper.classList.remove('snowman-building-reach', 'snowman-happy');
+
+                    if (!isAnimatingAttack && clickCount === 0) {
+                        wrapper.classList.add('snowman-surprised');
+                        setFaceExpression('surprised');
+                        armLeft.style.transform = 'rotate(-35deg)';
+                        armRight.style.transform = 'rotate(35deg)';
+                        speechText.textContent = 'O quê?! Ele está caindo! 😮❄️';
+                    }
+
+                    const reverseParts = [...miniParts].reverse();
+                    reverseParts.forEach((part, idx) => {
+                        const t = setTimeout(() => {
+                            if (part.classList.contains('built')) {
+                                part.classList.remove('built');
+                                part.classList.add('falling-piece');
+                            }
+                        }, idx * 140);
+                        collapseTimers.push(t);
+                    });
+
+                    const finishCollapse = setTimeout(() => {
+                        miniParts.forEach((part) => {
+                            part.classList.remove('built', 'falling-piece');
+                        });
+
+                        if (!isAnimatingAttack && clickCount === 0) {
+                            wrapper.classList.remove('snowman-surprised');
+                            wrapper.classList.add('snowman-happy');
+                            setFaceExpression('happy');
+                            armLeft.style.transform = 'rotate(0deg)';
+                            armRight.style.transform = 'rotate(0deg)';
+                            speechText.textContent = 'Ufa! Ele desmontou todinho! Fique paradinho que eu faço outro! ⛄';
+                        }
+                    }, reverseParts.length * 140 + 420);
+                    collapseTimers.push(finishCollapse);
+                }
+            }
+
+            function startBuildingSecondarySnowman() {
+                if (isAnimatingAttack || clickCount > 0) return;
+
+                clearCollapseTimers();
+                miniParts.forEach((part) => part.classList.remove('falling-piece', 'built'));
+
+                isBuildingOrBuilt = true;
+                wrapper.classList.remove('snowman-happy', 'snowman-surprised');
+                wrapper.classList.add('snowman-building-reach');
+                setFaceExpression('focused');
+                speechText.textContent = 'Hummm... muita concentração para fazer meu amiguinho! 🧐❄️';
+
+                const steps = [
+                    { part: miniParts[0], delay: 300, armL: 'rotate(-18deg)', armR: 'rotate(28deg)', msg: 'Concentrado... rolando a base bem redondinha... 🧐⚪' },
+                    { part: miniParts[1], delay: 1300, armL: 'rotate(-25deg)', armR: 'rotate(-15deg)', msg: 'Agora encaixando o tronco e o cachecol... 🧣' },
+                    { part: miniParts[2], delay: 2300, armL: 'rotate(-20deg)', armR: 'rotate(25deg)', msg: 'Quase lá... colocando a cabeça com cuidado... 🥕' },
+                    { part: miniParts[3], delay: 3300, armL: 'rotate(0deg)', armR: 'rotate(0deg)', msg: 'Prontinho! Ficou igualzinho a mim! ⛄✨', finish: true }
+                ];
+
+                steps.forEach((step) => {
+                    const t = setTimeout(() => {
+                        if (!isBuildingOrBuilt) return;
+                        step.part.classList.add('built');
+                        armLeft.style.transform = step.armL;
+                        armRight.style.transform = step.armR;
+                        speechText.textContent = step.msg;
+
+                        if (step.finish) {
+                            wrapper.classList.remove('snowman-building-reach');
+                            wrapper.classList.add('snowman-happy');
+                            setFaceExpression('happy');
+                        }
+                    }, step.delay);
+                    buildTimers.push(t);
+                });
+            }
+
+            function resetIdleTimer() {
+                if (isBuildingOrBuilt) {
+                    dismantleSecondarySnowman();
+                }
+
+                clearTimeout(idleTimer);
+                idleTimer = setTimeout(() => {
+                    if (!isRetrievingGift) {
+                        startBuildingSecondarySnowman();
+                    }
+                }, 10000);
+            }
+
+            ['mousemove', 'mousedown', 'click', 'touchstart', 'touchmove', 'keydown', 'wheel'].forEach((evt) => {
+                window.addEventListener(evt, resetIdleTimer, { passive: true });
+            });
+
+            resetIdleTimer();
+
+            /**
+             * MECÂNICA DOS PRESENTES ARRASTÁVEIS + SETINHA INDICATIVA
+             */
+            const gifts = [
+                document.getElementById('gift-red'),
+                document.getElementById('gift-blue')
+            ];
+            const dragHint = document.getElementById('gift-drag-hint');
+            let userHasDraggedGift = false;
+
+            function updateDragHintPosition() {
+                if (!dragHint || userHasDraggedGift) return;
+                const blueGift = document.getElementById('gift-blue');
+                if (!blueGift || !wrapper) return;
+
+                const giftRect = blueGift.getBoundingClientRect();
+                const snowmanRect = wrapper.getBoundingClientRect();
+
+                if (giftRect.width === 0 || snowmanRect.width === 0) return;
+
+                const midX = (giftRect.right + snowmanRect.left) / 2;
+                const hintWidth = dragHint.offsetWidth || 125;
+                const targetLeft = Math.max(8, midX - hintWidth / 2);
+                const targetTop = Math.min(giftRect.top, snowmanRect.bottom - 75) - 34;
+
+                dragHint.style.left = `${targetLeft}px`;
+                dragHint.style.top = `${targetTop}px`;
+            }
+
+            function hideDragHint() {
+                if (!dragHint || userHasDraggedGift) return;
+                userHasDraggedGift = true;
+                dragHint.classList.add('hint-hidden');
+            }
+
+            function positionGiftAtSlot(giftEl, animate = false) {
+                if (!giftEl) return;
+                const slotId = giftEl.getAttribute('data-slot');
+                const slotEl = document.getElementById(slotId);
+                if (!slotEl) return;
+
+                const slotRect = slotEl.getBoundingClientRect();
+                const giftRect = giftEl.getBoundingClientRect();
+
+                const targetLeft = slotRect.left + (slotRect.width - giftRect.width) / 2;
+                const targetTop = slotRect.top + (slotRect.height - giftRect.height) / 2;
+
+                if (animate) {
+                    giftEl.classList.add('returning');
+                } else {
+                    giftEl.classList.remove('returning');
+                }
+
+                giftEl.style.left = `${targetLeft}px`;
+                giftEl.style.top = `${targetTop}px`;
+                giftEl.dataset.isOutOfPlace = 'false';
+
+                if (animate) {
+                    setTimeout(() => {
+                        giftEl.classList.remove('returning');
+                    }, 660);
+                }
+            }
+
+            function alignAllGiftsToTree() {
+                gifts.forEach((gift) => {
+                    if (gift && gift.dataset.isOutOfPlace !== 'true' && !gift.classList.contains('dragging')) {
+                        positionGiftAtSlot(gift, false);
+                    }
+                });
+                updateDragHintPosition();
+            }
+
+            requestAnimationFrame(() => {
+                alignAllGiftsToTree();
+                setTimeout(alignAllGiftsToTree, 150);
+            });
+            window.addEventListener('resize', alignAllGiftsToTree);
+
+            function checkCollisionWithSnowman(giftEl) {
+                const giftRect = giftEl.getBoundingClientRect();
+                const snowmanRect = wrapper.getBoundingClientRect();
+
+                const padX = snowmanRect.width * 0.14;
+                const padY = snowmanRect.height * 0.1;
+
+                return !(
+                    giftRect.right < snowmanRect.left + padX ||
+                    giftRect.left > snowmanRect.right - padX ||
+                    giftRect.bottom < snowmanRect.top + padY ||
+                    giftRect.top > snowmanRect.bottom - padY
+                );
+            }
+
+            function triggerSnowmanReturnGift(giftEl) {
+                if (isRetrievingGift || isAnimatingAttack) {
+                    positionGiftAtSlot(giftEl, true);
+                    return;
+                }
+
+                isRetrievingGift = true;
+                dismantleSecondarySnowman();
+
+                const giftRect = giftEl.getBoundingClientRect();
+                const snowmanRect = wrapper.getBoundingClientRect();
+                const slotEl = document.getElementById(giftEl.getAttribute('data-slot'));
+                const slotRect = slotEl.getBoundingClientRect();
+
+                const snowmanCenterX = snowmanRect.left + snowmanRect.width / 2;
+                const treeTargetX = slotRect.left + slotRect.width / 2 + 28;
+                const deltaXToTree = treeTargetX - snowmanCenterX;
+
+                // Etapa 0: O presente bate no boneco e ele sente o impacto
+                wrapper.classList.remove('snowman-happy', 'snowman-annoyed', 'snowman-angry', 'snowman-surprised', 'snowman-hit-reaction');
+                void wrapper.offsetWidth;
+                wrapper.classList.add('snowman-hit-reaction');
+                setFaceExpression('surprised');
+                angerBlush.setAttribute('opacity', '0.45');
+                armLeft.style.transform = 'rotate(-42deg)';
+                armRight.style.transform = 'rotate(42deg)';
+                speechText.textContent = 'AI! Essa doeu! Bateu bem na minha barriga! 😣💥🎁';
+
+                giftEl.classList.remove('gift-hit-bounce');
+                void giftEl.offsetWidth;
+                giftEl.classList.add('gift-hit-bounce');
+
+                // Etapa 1: Ele pega o presente e devolve pulando até a árvore
+                setTimeout(() => {
+                    wrapper.classList.remove('snowman-hit-reaction');
+                    giftEl.classList.remove('gift-hit-bounce');
+                    angerBlush.setAttribute('opacity', '0');
+
+                    setFaceExpression('focused');
+                    speechText.textContent = 'Presentes ficam embaixo da árvore! Vou devolver pulando! 🎁⛄';
+
+                    armLeft.style.transform = 'rotate(-36deg)';
+                    armRight.style.transform = 'rotate(36deg)';
+
+                    const holdLeft = snowmanCenterX - giftRect.width / 2;
+                    const holdTop = snowmanRect.top + snowmanRect.height * 0.48;
+                    giftEl.classList.add('returning');
+                    giftEl.style.left = `${holdLeft}px`;
+                    giftEl.style.top = `${holdTop}px`;
+
+                    setTimeout(() => {
+                        wrapper.style.transition = 'transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                        wrapper.style.transform = `translateX(${deltaXToTree}px) translateY(-18px) rotate(-6deg)`;
+                        positionGiftAtSlot(giftEl, true);
+                    }, 220);
+
+                    setTimeout(() => {
+                        speechText.textContent = 'Prontinho, bem guardado! Voltando ao meu lugar... 🎄✨';
+                        setFaceExpression('happy');
+                        armLeft.style.transform = 'rotate(0deg)';
+                        armRight.style.transform = 'rotate(0deg)';
+                        wrapper.style.transform = 'translateX(0px) translateY(0px) rotate(0deg)';
+                    }, 980);
+
+                    setTimeout(() => {
+                        wrapper.style.transition = '';
+                        wrapper.style.transform = '';
+                        isRetrievingGift = false;
+                        updateSnowmanMood(clickCount);
+                        if (clickCount === 0) {
+                            speechText.textContent = 'Presente devolvido! Pode pegar de novo se quiser! ⛄🎁';
+                        }
+                        resetIdleTimer();
+                    }, 1680);
+                }, 750);
+            }
+
+            gifts.forEach((giftEl) => {
+                if (!giftEl) return;
+
+                let isDraggingThis = false;
+                let offsetX = 0;
+                let offsetY = 0;
+
+                function startDrag(clientX, clientY) {
+                    if (isRetrievingGift || giftEl.classList.contains('returning')) return;
+
+                    hideDragHint();
+
+                    const rect = giftEl.getBoundingClientRect();
+                    isDraggingThis = true;
+                    offsetX = clientX - rect.left;
+                    offsetY = clientY - rect.top;
+
+                    giftEl.classList.add('dragging');
+                    giftEl.dataset.isOutOfPlace = 'true';
+                    resetIdleTimer();
+                }
+
+                function moveDrag(clientX, clientY) {
+                    if (!isDraggingThis) return;
+
+                    const maxLeft = window.innerWidth - giftEl.offsetWidth;
+                    const maxTop = window.innerHeight - giftEl.offsetHeight;
+                    const nextLeft = Math.max(0, Math.min(maxLeft, clientX - offsetX));
+                    const nextTop = Math.max(0, Math.min(maxTop, clientY - offsetY));
+
+                    giftEl.style.left = `${nextLeft}px`;
+                    giftEl.style.top = `${nextTop}px`;
+
+                    if (checkCollisionWithSnowman(giftEl)) {
+                        endDrag(true);
+                    }
+                }
+
+                function endDrag(hitSnowman = false) {
+                    if (!isDraggingThis) return;
+                    isDraggingThis = false;
+                    giftEl.classList.remove('dragging');
+
+                    if (hitSnowman || checkCollisionWithSnowman(giftEl)) {
+                        triggerSnowmanReturnGift(giftEl);
+                    }
+                }
+
+                giftEl.addEventListener('mousedown', (e) => {
+                    if (e.button !== 0) return;
+                    e.preventDefault();
+                    startDrag(e.clientX, e.clientY);
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (isDraggingThis) {
+                        moveDrag(e.clientX, e.clientY);
+                    }
+                });
+
+                window.addEventListener('mouseup', () => {
+                    if (isDraggingThis) {
+                        endDrag(false);
+                    }
+                });
+
+                giftEl.addEventListener('touchstart', (e) => {
+                    if (e.touches.length > 0) {
+                        const t = e.touches[0];
+                        startDrag(t.clientX, t.clientY);
+                    }
+                }, { passive: true });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (isDraggingThis && e.touches.length > 0) {
+                        const t = e.touches[0];
+                        moveDrag(t.clientX, t.clientY);
+                    }
+                }, { passive: true });
+
+                window.addEventListener('touchend', () => {
+                    if (isDraggingThis) {
+                        endDrag(false);
+                    }
+                });
+            });
+        }
+
+        /**
+         * 5. MÚSICA NATALINA (CAIXINHA DE MÚSICA VIA WEB AUDIO API)
+         */
+        function initChristmasMusic() {
+            const btn = document.getElementById('toggle-music-btn');
+            const icon = document.getElementById('music-icon');
+            const label = document.getElementById('music-label');
+
+            let audioCtx = null;
+            let isPlaying = false;
+            let stepTimeout = null;
+            let noteIndex = 0;
+
+            const melody = [
+                { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.50 },
+                { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.50 },
+                { f: 329.63, d: 0.25 }, { f: 392.00, d: 0.25 }, { f: 261.63, d: 0.35 }, { f: 293.66, d: 0.15 },
+                { f: 329.63, d: 0.80 }, { f: 0, d: 0.20 },
+
+                { f: 349.23, d: 0.25 }, { f: 349.23, d: 0.25 }, { f: 349.23, d: 0.35 }, { f: 349.23, d: 0.15 },
+                { f: 349.23, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 },
+                { f: 329.63, d: 0.25 }, { f: 293.66, d: 0.25 }, { f: 293.66, d: 0.25 }, { f: 329.63, d: 0.25 },
+                { f: 293.66, d: 0.50 }, { f: 392.00, d: 0.50 },
+
+                { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.50 },
+                { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.50 },
+                { f: 329.63, d: 0.25 }, { f: 392.00, d: 0.25 }, { f: 261.63, d: 0.35 }, { f: 293.66, d: 0.15 },
+                { f: 329.63, d: 0.80 }, { f: 0, d: 0.20 },
+
+                { f: 349.23, d: 0.25 }, { f: 349.23, d: 0.25 }, { f: 349.23, d: 0.35 }, { f: 349.23, d: 0.15 },
+                { f: 349.23, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 }, { f: 329.63, d: 0.25 },
+                { f: 392.00, d: 0.25 }, { f: 392.00, d: 0.25 }, { f: 349.23, d: 0.25 }, { f: 293.66, d: 0.25 },
+                { f: 261.63, d: 0.90 }, { f: 0, d: 0.40 }
+            ];
+
+            function playBellNote(freq, duration) {
+                if (!audioCtx || freq <= 0) return;
+
+                const now = audioCtx.currentTime;
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(freq, now);
+
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(freq * 2, now);
+
+                const osc2Gain = audioCtx.createGain();
+                osc2Gain.gain.setValueAtTime(0.08, now);
+
+                gainNode.gain.setValueAtTime(0.001, now);
+                gainNode.gain.exponentialRampToValueAtTime(0.14, now + 0.02);
+                gainNode.gain.exponentialRampToValueAtTime(0.0008, now + duration + 0.35);
+
+                osc1.connect(gainNode);
+                osc2.connect(osc2Gain);
+                osc2Gain.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + duration + 0.4);
+                osc2.stop(now + duration + 0.4);
+            }
+
+            function scheduleNextNote() {
+                if (!isPlaying) return;
+
+                const current = melody[noteIndex];
+                playBellNote(current.f, current.d);
+
+                noteIndex = (noteIndex + 1) % melody.length;
+                stepTimeout = setTimeout(scheduleNextNote, current.d * 1000);
+            }
+
+            btn.addEventListener('click', () => {
+                if (!audioCtx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    audioCtx = new AudioContextClass();
+                }
+
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                isPlaying = !isPlaying;
+
+                if (isPlaying) {
+                    icon.textContent = '🎵';
+                    label.textContent = 'Música: On';
+                    scheduleNextNote();
+                } else {
+                    icon.textContent = '🔇';
+                    label.textContent = 'Música: Off';
+                    clearTimeout(stepTimeout);
+                }
+            });
+        }
+
+        /**
+         * 6. ALTERNAR TEMA CLARO / ESCURO
+         */
+        function initThemeToggle() {
+            const btn = document.getElementById('toggle-theme-btn');
+            const icon = document.getElementById('theme-icon');
+            const label = document.getElementById('theme-label');
+            const input = document.getElementById('christmas-name-input');
+
+            btn.addEventListener('click', () => {
+                isLightTheme = !isLightTheme;
+                document.body.classList.toggle('light-theme', isLightTheme);
+
+                if (isLightTheme) {
+                    icon.textContent = '🌙';
+                    label.textContent = 'Tema Escuro';
+                    input.classList.remove('bg-slate-950/60', 'text-white', 'placeholder-slate-300');
+                    input.classList.add('bg-white/90', 'text-slate-900', 'placeholder-slate-500');
+                } else {
+                    icon.textContent = '☀️';
+                    label.textContent = 'Tema Claro';
+                    input.classList.remove('bg-white/90', 'text-slate-900', 'placeholder-slate-500');
+                    input.classList.add('bg-slate-950/60', 'text-white', 'placeholder-slate-300');
+                }
+            });
+        }
+
+        /**
+         * 7. LISTA COLABORATIVA ESTILO CRÉDITOS DE FILME + SINCRONIZAÇÃO FIRESTORE
+         */
+        async function initCollaborativeCredits() {
+            const viewport = document.getElementById('credits-viewport');
+            const track = document.getElementById('credits-track');
+            const form = document.getElementById('christmas-name-form');
+            const input = document.getElementById('christmas-name-input');
+            const sendBtn = document.getElementById('send-name-btn');
+            const feedback = document.getElementById('form-feedback');
+            const syncBadge = document.getElementById('sync-badge');
+
+            const defaultNames = [
+                { name: '✨ Boas Festas a Todos ✨', isHeader: true },
+                { name: 'Papai Noel & Mamãe Noel' },
+                { name: 'Rena Rudolph' },
+                { name: 'Sr. Boneco de Neve' }
+            ];
+
+            let currentNames = [...defaultNames];
+            let scrollY = 0;
+            let state = 'RESET';
+            let lastTimestamp = null;
+            let pauseTimer = 0;
+            const SCROLL_SPEED_PX_PER_SEC = 28;
+
+            function renderCreditsList(namesList) {
+                track.innerHTML = '';
+
+                const titleEl = document.createElement('div');
+                titleEl.className = 'sky-credit-text text-amber-300 font-royal text-xs sm:text-sm tracking-widest uppercase mb-1';
+                titleEl.textContent = '★ Lista do Papai Noel ★';
+                track.appendChild(titleEl);
+
+                namesList.forEach((item) => {
+                    const row = document.createElement('div');
+                    row.className = 'sky-credit-text text-amber-50 text-sm sm:text-base font-semibold tracking-wide px-2';
+                    row.textContent = `✨ ${item.name}`;
+                    track.appendChild(row);
+                });
+
+                const endEl = document.createElement('div');
+                endEl.className = 'sky-credit-text text-amber-300/90 text-xs italic mt-2';
+                endEl.textContent = '🎄 Feliz Natal! 🎄';
+                track.appendChild(endEl);
+
+                resetScrollToBottom();
+            }
+
+            function resetScrollToBottom() {
+                scrollY = viewport.clientHeight || 200;
+                track.style.transform = `translateY(${scrollY}px)`;
+                state = 'SCROLLING';
+                pauseTimer = 0;
+            }
+
+            function animateCredits(timestamp) {
+                if (!lastTimestamp) lastTimestamp = timestamp;
+                const dt = (timestamp - lastTimestamp) / 1000;
+                lastTimestamp = timestamp;
+
+                if (state === 'SCROLLING') {
+                    scrollY -= SCROLL_SPEED_PX_PER_SEC * dt;
+                    track.style.transform = `translateY(${scrollY}px)`;
+
+                    const trackHeight = track.offsetHeight || 140;
+                    if (scrollY <= -trackHeight) {
+                        state = 'PAUSING';
+                        pauseTimer = 0;
+                    }
+                } else if (state === 'PAUSING') {
+                    pauseTimer += dt;
+                    if (pauseTimer >= 2.0) {
+                        resetScrollToBottom();
+                    }
+                }
+
+                requestAnimationFrame(animateCredits);
+            }
+
+            renderCreditsList(currentNames);
+            requestAnimationFrame(animateCredits);
+
+            let db = null;
+            let user = null;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'natal-interativo-app';
+
+            try {
+                if (typeof __firebase_config !== 'undefined') {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    const auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                        user = cred.user;
+                    } else {
+                        const cred = await signInAnonymously(auth);
+                        user = cred.user;
+                    }
+
+                    if (user && db) {
+                        const namesCol = collection(db, 'artifacts', appId, 'public', 'data', 'christmas_credits');
+
+                        onSnapshot(namesCol, (snapshot) => {
+                            const fetched = [];
+                            snapshot.forEach((docSnap) => {
+                                const data = docSnap.data();
+                                if (data && data.name) {
+                                    fetched.push({
+                                        name: data.name,
+                                        createdAtMs: data.createdAtMs || 0
+                                    });
+                                }
+                            });
+
+                            fetched.sort((a, b) => a.createdAtMs - b.createdAtMs);
+
+                            if (fetched.length > 0) {
+                                currentNames = fetched;
+                            } else {
+                                currentNames = [...defaultNames];
+                            }
+
+                            renderCreditsList(currentNames);
+                        }, (error) => {
+                            console.error('Erro na sincronização em tempo real:', error);
+                            syncBadge.textContent = '● Local';
+                        });
+                    }
+                } else {
+                    syncBadge.textContent = '● Modo Local';
+                }
+            } catch (err) {
+                console.error('Erro ao inicializar armazenamento compartilhado:', err);
+                syncBadge.textContent = '● Modo Local';
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const rawName = input.value.trim();
+                if (!rawName) return;
+
+                input.value = '';
+                sendBtn.disabled = true;
+
+                try {
+                    if (db && user) {
+                        const namesCol = collection(db, 'artifacts', appId, 'public', 'data', 'christmas_credits');
+                        await addDoc(namesCol, {
+                            name: rawName,
+                            uid: user.uid,
+                            createdAtMs: Date.now(),
+                            createdAt: serverTimestamp()
+                        });
+                    } else {
+                        currentNames.push({ name: rawName, createdAtMs: Date.now() });
+                        renderCreditsList(currentNames);
+                    }
+
+                    feedback.textContent = 'Nome enviado ao céu!';
+                    feedback.classList.remove('hidden');
+                    setTimeout(() => feedback.classList.add('hidden'), 2200);
+                } catch (err) {
+                    console.error('Erro ao enviar nome:', err);
+                    feedback.textContent = 'Não foi possível enviar.';
+                    feedback.classList.remove('hidden');
+                    setTimeout(() => feedback.classList.add('hidden'), 2500);
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            });
+        }
+
+        /**
+         * 8. MECÂNICA DE "FAZER PEDIDO" (ENVELOPE, TRENÓ DO PAPAI NOEL E COMEMORAÇÃO)
+         */
+        function initWishEnvelopeFeature() {
+            const openBtn = document.getElementById('open-wish-envelope-btn');
+            const modal = document.getElementById('wish-letter-modal');
+            const envelopeCard = document.getElementById('wish-envelope-card');
+            const closeBtn = document.getElementById('close-wish-modal-btn');
+            const form = document.getElementById('wish-letter-form');
+            const textarea = document.getElementById('wish-letter-textarea');
+            const submitBtn = document.getElementById('submit-wish-btn');
+            const wishSanta = document.getElementById('wish-santa-collector');
+            const collectedEnv = document.getElementById('santa-collected-envelope');
+            const celebrationBanner = document.getElementById('wish-celebration-banner');
+
+            let isProcessingWish = false;
+
+            function playHappyCelebrationMelody() {
+                try {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    const ctx = new AudioContextClass();
+                    if (ctx.state === 'suspended') ctx.resume();
+
+                    const notes = [
+                        { f: 392.00, t: 0.00, d: 0.18 },
+                        { f: 523.25, t: 0.14, d: 0.18 },
+                        { f: 523.25, t: 0.30, d: 0.12 },
+                        { f: 587.33, t: 0.42, d: 0.12 },
+                        { f: 523.25, t: 0.54, d: 0.12 },
+                        { f: 493.88, t: 0.66, d: 0.12 },
+                        { f: 440.00, t: 0.78, d: 0.22 },
+                        { f: 587.33, t: 1.00, d: 0.22 },
+                        { f: 659.25, t: 1.22, d: 0.22 },
+                        { f: 783.99, t: 1.44, d: 0.55 },
+                        { f: 1046.50, t: 1.50, d: 0.65 }
+                    ];
+
+                    notes.forEach((n) => {
+                        const start = ctx.currentTime + n.t;
+                        const osc = ctx.createOscillator();
+                        const harmonic = ctx.createOscillator();
+                        const gain = ctx.createGain();
+
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(n.f, start);
+
+                        harmonic.type = 'sine';
+                        harmonic.frequency.setValueAtTime(n.f * 2, start);
+
+                        const harmGain = ctx.createGain();
+                        harmGain.gain.setValueAtTime(0.12, start);
+
+                        gain.gain.setValueAtTime(0.001, start);
+                        gain.gain.exponentialRampToValueAtTime(0.24, start + 0.025);
+                        gain.gain.exponentialRampToValueAtTime(0.001, start + n.d + 0.25);
+
+                        osc.connect(gain);
+                        harmonic.connect(harmGain);
+                        harmGain.connect(gain);
+                        gain.connect(ctx.destination);
+
+                        osc.start(start);
+                        harmonic.start(start);
+                        osc.stop(start + n.d + 0.3);
+                        harmonic.stop(start + n.d + 0.3);
+                    });
+                } catch (err) {
+                    console.warn('Áudio de comemoração indisponível:', err);
+                }
+            }
+
+            function triggerCelebrationParticles() {
+                const emojis = ['✨', '⭐', '🎄', '🎁', '❄️', '🔔', '🌟'];
+                const total = 34;
+
+                for (let i = 0; i < total; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'celebration-sparkle text-xl sm:text-2xl';
+                    p.textContent = emojis[i % emojis.length];
+
+                    const startX = window.innerWidth * (0.25 + Math.random() * 0.5);
+                    const startY = window.innerHeight * (0.25 + Math.random() * 0.35);
+                    const angle = (Math.PI * 2 * i) / total + (Math.random() * 0.4);
+                    const distance = 110 + Math.random() * 210;
+
+                    p.style.left = `${startX}px`;
+                    p.style.top = `${startY}px`;
+                    p.style.setProperty('--tx', `${Math.cos(angle) * distance}px`);
+                    p.style.setProperty('--ty', `${Math.sin(angle) * distance - 40}px`);
+                    p.style.setProperty('--dur', `${(1.2 + Math.random() * 0.7).toFixed(2)}s`);
+
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 2000);
+                }
+
+                celebrationBanner.classList.remove('hidden');
+                setTimeout(() => {
+                    celebrationBanner.classList.add('hidden');
+                }, 3200);
+            }
+
+            function openWishModal() {
+                if (isProcessingWish) return;
+
+                collectedEnv.setAttribute('opacity', '0');
+                wishSanta.classList.remove('santa-departing', 'opacity-0');
+                wishSanta.classList.add('opacity-100');
+                void wishSanta.offsetWidth;
+                wishSanta.classList.add('santa-arrived');
+
+                envelopeCard.classList.remove('envelope-fly-to-santa');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => textarea.focus(), 200);
+            }
+
+            function closeWishModal(sendSantaAway = true) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+
+                if (sendSantaAway && wishSanta.classList.contains('santa-arrived')) {
+                    wishSanta.classList.remove('santa-arrived');
+                    wishSanta.classList.add('santa-departing');
+                    setTimeout(() => {
+                        wishSanta.classList.add('opacity-0');
+                        wishSanta.classList.remove('opacity-100', 'santa-departing');
+                    }, 1150);
+                }
+            }
+
+            openBtn.addEventListener('click', openWishModal);
+
+            closeBtn.addEventListener('click', () => {
+                if (!isProcessingWish) closeWishModal(true);
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal && !isProcessingWish) {
+                    closeWishModal(true);
+                }
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (isProcessingWish || !textarea.value.trim()) return;
+
+                isProcessingWish = true;
+                submitBtn.disabled = true;
+
+                envelopeCard.classList.add('envelope-fly-to-santa');
+
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    envelopeCard.classList.remove('envelope-fly-to-santa');
+
+                    collectedEnv.setAttribute('opacity', '1');
+                    wishSanta.classList.remove('santa-arrived');
+                    wishSanta.classList.add('santa-departing');
+
+                    playHappyCelebrationMelody();
+                    triggerCelebrationParticles();
+
+                    setTimeout(() => {
+                        textarea.value = '';
+                        wishSanta.classList.add('opacity-0');
+                        wishSanta.classList.remove('opacity-100', 'santa-departing');
+                        collectedEnv.setAttribute('opacity', '0');
+                        submitBtn.disabled = false;
+                        isProcessingWish = false;
+                    }, 1300);
+                }, 780);
+            });
+        }
+
+        // Inicializa todos os elementos da página após o carregamento
+        window.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            initSnowfall();
+            startSantaInterval();
+            initTreeOrnamentsSwing();
+            initSnowmanInteraction();
+            initChristmasMusic();
+            initThemeToggle();
+            initCollaborativeCredits();
+            initWishEnvelopeFeature();
+        });
+    </script>
+    obrigada por ler!
+</body>
+</html>
